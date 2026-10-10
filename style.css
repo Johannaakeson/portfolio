@@ -218,7 +218,7 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
   .panel-close { font-size: 16px; }
   .info-panel { --panel-text-width: 820px; }
   .info-panel p { font-size: 16px; }
-  .panel-links a, .footer-links a { font-size: 16px; }
+  .panel-links a, .footer-links a { font-size: 13px; }
 }
 
 .info-panel p {
