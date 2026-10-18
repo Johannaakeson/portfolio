@@ -4,6 +4,13 @@ window.addEventListener('scroll', () => {
   document.body.classList.toggle('scrolled', window.scrollY > heroHeight - 80);
 });
 
+// hero: snabb inblandning när videon är redo att spelas, så bara en kort
+// neutral gråton syns innan dess (istället för en abrupt växling)
+const heroVideo = document.getElementById('heroVideo');
+function markHeroReady() { heroVideo.classList.add('is-ready'); }
+if (heroVideo.readyState >= 2) markHeroReady();
+heroVideo.addEventListener('loadeddata', markHeroReady);
+
 // info-panel: Info-knappen i headern öppnar, (Close) stänger
 const panel = document.getElementById('infoPanel');
 const openBtn = document.getElementById('infoToggle');

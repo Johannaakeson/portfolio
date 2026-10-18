@@ -50,10 +50,12 @@ body.panel-open .hdr-role { opacity: 0; pointer-events: none; }
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 }
-.hdr-name:hover,
-.hdr-role:hover {
-  animation: hdr-blink .4s steps(1) infinite;
-  cursor: default;
+@media (hover: hover) and (pointer: fine) {
+  .hdr-name:hover,
+  .hdr-role:hover {
+    animation: hdr-blink .4s steps(1) infinite;
+    cursor: default;
+  }
 }
 .hdr-toggle {
   grid-column: 3;
@@ -71,34 +73,16 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
 .hero-video {
   position: absolute; inset: 0; display: flex;
   align-items: center; justify-content: center;
-  background: linear-gradient(135deg, #5b3fa0 0%, #2f2050 100%);
+  background: #e0ddd6; /* neutral tills posterbilden/videon hunnit ladda */
   overflow: hidden;
 }
 .hero-media {
   width: 100%; height: 100%; object-fit: cover; display: block;
+  opacity: 0;
+  transition: opacity .35s ease; /* mjuk men snabb inblandning när videon är redo */
 }
-.hero-inner { display: flex; flex-direction: column; align-items: center; color: #fff; }
-.play-icon {
-  width: 58px; height: 58px; border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.55);
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 16px;
-}
-.play-icon::after {
-  content: ""; width: 0; height: 0;
-  border-top: 10px solid transparent; border-bottom: 10px solid transparent;
-  border-left: 15px solid rgba(255,255,255,.75);
-  margin-left: 4px;
-}
-.hero-label {
-  font-size: 11px; letter-spacing: 3px; text-transform: uppercase; opacity: .7;
-  text-align: center; padding: 0 20px;
-}
-.hero-mobile { display: none; }
+.hero-media.is-ready { opacity: 1; }
 @media (max-width: 700px) {
-  .hero-desktop { display: none; }
-  .hero-mobile { display: flex; }
-  .hero-mobile .hero-video { background: linear-gradient(200deg, #3a2a63 0%, #1c1533 100%); }
   .hdr-logo { top: -4px; }
 }
 
@@ -218,7 +202,7 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
   .panel-close { font-size: 16px; }
   .info-panel { --panel-text-width: 820px; }
   .info-panel p { font-size: 16px; }
-  .panel-links a, .footer-links a { font-size: 13px; }
+  .panel-links a, .footer-links a { font-size: 16px; }
 }
 
 .info-panel p {
