@@ -50,11 +50,7 @@ window.addEventListener('resize', updatePanelWidth);
 // ===== KARUSELL =====
 const carousel = document.getElementById('carousel');
 const wrap = document.getElementById('carouselWrap');
-let autoScrollTimer;
 let autoPaused = false;
-function isMobile() {
-  return window.matchMedia('(max-width: 700px)').matches;
-}
 
 // Oändlig skroll åt båda håll: korten ligger som tre set i DOM:en (klon-FÖRE +
 // original + klon-EFTER). Vi startar i mitten och hoppar tyst +/- ett sets
@@ -76,19 +72,6 @@ function normalizeScroll() {
   }
 }
 carousel.scrollLeft = getSetWidth();
-
-// autoscroll (endast mobil)
-function startAutoScroll() {
-  clearInterval(autoScrollTimer);
-  if (!isMobile()) return;
-  autoScrollTimer = setInterval(() => {
-    if (autoPaused) return;
-    carousel.scrollLeft += 1;
-    normalizeScroll();
-  }, 30);
-}
-startAutoScroll();
-window.addEventListener('resize', startAutoScroll);
 
 // indexbaserad snap: varje "sida" är en kortbredd (+ gap) från start, så ett
 // kort alltid landar exakt i marginalen oavsett drag, klick eller skrollhjul
