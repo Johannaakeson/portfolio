@@ -31,7 +31,7 @@ body.scrolled .hdr-scrim { opacity: 0; }
 body.scrolled header { color: #111; }
 body.panel-open header { pointer-events: none; }
 
-.hdr-name { justify-self: start; font-weight: 400; white-space: nowrap; }
+.hdr-name { justify-self: start; font-weight: 400; white-space: nowrap; letter-spacing: -0.02em; }
 /* viewBox på loggan är beskuren exakt vid bokstävernas baslinje, så den linjerar
    automatiskt med övrig headertext via vertical-align: baseline. top: -2px/-4px
    är en liten finjustering ovanpå det. */
@@ -177,7 +177,7 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
 .page-footer {
   margin-top: auto;
   padding: 0 12px 14px;
-  font-size: 16px; line-height: 1.5; color: #1a1a1a;
+  font-size: 13px; line-height: 1.5; color: #1a1a1a;
   display: flex; flex-direction: row; justify-content: space-between; align-items: baseline;
   gap: 16px; flex-wrap: wrap;
 }
@@ -188,7 +188,7 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
   .footer-copy-short { display: inline; }
 }
 .footer-links { display: flex; flex-direction: row; gap: 20px; }
-.footer-links a { font-size: 16px; color: #1a1a1a; text-decoration: underline; }
+.footer-links a { font-size: 13px; color: #1a1a1a; text-decoration: underline; }
 
 /* ===== INFO PANEL ===== */
 .info-panel {
@@ -208,14 +208,11 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
   padding: 14px 12px;
   font-weight: 400;
 }
-.panel-info-label { font-size: 13px; line-height: 1.05; letter-spacing: normal; }
-.panel-close { font-size: 13px; line-height: 1.05; cursor: pointer; z-index: 26; position: relative; }
+.panel-info-label { font-size: 16px; line-height: 1.05; letter-spacing: normal; }
+.panel-close { font-size: 16px; line-height: 1.05; cursor: pointer; z-index: 26; position: relative; }
 
 @media (min-width: 701px) {
-  .panel-info-label { font-size: 16px; }
-  .panel-close { font-size: 16px; }
   .info-panel { --panel-text-width: 820px; }
-  .panel-links a { font-size: 16px; }
 }
 @media (max-width: 700px) {
   .info-panel { width: 100%; } /* täcker hela skärmen när den fälls ut på mobil */
