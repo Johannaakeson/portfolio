@@ -29,20 +29,18 @@ function setPanel(open) {
 openBtn.addEventListener('click', () => setPanel(true));
 closeBtn.addEventListener('click', () => setPanel(false));
 
-// panelens bredd: desktop/tablet mäter som tidigare mot titelns vänsterkant (titeln
-// syns där). På mobil är titeln dold (döljs för att inte overlappa namnet), så där
-// mäter vi istället mot namnets högerkant så panelen stannar strax till höger om namnet.
+// panelens bredd: på mobil täcker den hela skärmen (sätts i CSS via media query,
+// ingen uträkning behövs). På desktop/tablet mäts vänsterkanten mot titelns
+// vänsterkant, precis som tidigare.
 const hdrRole = document.querySelector('.hdr-role');
-const hdrName = document.querySelector('.hdr-name');
 function updatePanelWidth() {
-  const buffer = 14;
   const mobile = window.matchMedia('(max-width: 700px)').matches;
-  let leftEdge;
   if (mobile) {
-    leftEdge = hdrName.getBoundingClientRect().right + buffer;
-  } else {
-    leftEdge = hdrRole.getBoundingClientRect().left - buffer;
+    panel.style.width = ''; // låt CSS (100%) styra
+    return;
   }
+  const buffer = 14;
+  const leftEdge = hdrRole.getBoundingClientRect().left - buffer;
   const width = window.innerWidth - leftEdge;
   panel.style.width = width + 'px';
 }

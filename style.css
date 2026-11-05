@@ -16,7 +16,7 @@ header {
   column-gap: 16px;
   align-items: start;
   padding: 14px 12px;
-  font-size: 13px; line-height: 1.05; letter-spacing: normal;
+  font-size: 16px; line-height: 1.05; letter-spacing: normal;
   font-weight: 400;
   color: #fff;
   transition: color .3s ease;
@@ -35,7 +35,7 @@ body.panel-open header { pointer-events: none; }
 /* viewBox på loggan är beskuren exakt vid bokstävernas baslinje, så den linjerar
    automatiskt med övrig headertext via vertical-align: baseline. top: -2px/-4px
    är en liten finjustering ovanpå det. */
-.hdr-logo { height: 14.5px; width: auto; vertical-align: baseline; fill: currentColor; overflow: visible; position: relative; top: -2px; }
+.hdr-logo { height: 16.5px; width: auto; vertical-align: baseline; fill: currentColor; overflow: visible; position: relative; top: -2px; }
 .hdr-role {
   position: fixed; top: 14px; left: 50%;
   transform: translateX(-50%);
@@ -177,12 +177,18 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
 .page-footer {
   margin-top: auto;
   padding: 0 12px 14px;
-  font-size: 13px; line-height: 1.5; color: #1a1a1a;
+  font-size: 16px; line-height: 1.5; color: #1a1a1a;
   display: flex; flex-direction: row; justify-content: space-between; align-items: baseline;
   gap: 16px; flex-wrap: wrap;
 }
+.footer-copy-short { display: none; }
+@media (max-width: 700px) {
+  /* kort copyright på mobil så den inte blir för lång och krockar med länkarna */
+  .footer-copy-full { display: none; }
+  .footer-copy-short { display: inline; }
+}
 .footer-links { display: flex; flex-direction: row; gap: 20px; }
-.footer-links a { font-size: 13px; color: #1a1a1a; text-decoration: underline; }
+.footer-links a { font-size: 16px; color: #1a1a1a; text-decoration: underline; }
 
 /* ===== INFO PANEL ===== */
 .info-panel {
@@ -206,13 +212,13 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
 .panel-close { font-size: 13px; line-height: 1.05; cursor: pointer; z-index: 26; position: relative; }
 
 @media (min-width: 701px) {
-  header { font-size: 16px; }
-  .hdr-logo { height: 16.5px; }
   .panel-info-label { font-size: 16px; }
   .panel-close { font-size: 16px; }
   .info-panel { --panel-text-width: 820px; }
-  .panel-links a, .footer-links a { font-size: 16px; }
-  .page-footer { font-size: 16px; } /* så copyright-texten matchar länkarna bredvid, inte bara dem själva */
+  .panel-links a { font-size: 16px; }
+}
+@media (max-width: 700px) {
+  .info-panel { width: 100%; } /* täcker hela skärmen när den fälls ut på mobil */
 }
 
 .info-panel p {
