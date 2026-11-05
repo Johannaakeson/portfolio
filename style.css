@@ -78,12 +78,10 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
 }
 .hero-media {
   width: 100%; height: 100%; object-fit: cover; display: block;
-  opacity: 0;
-  transition: opacity .35s ease; /* mjuk men snabb inblandning när videon är redo */
 }
-.hero-media.is-ready { opacity: 1; }
 @media (max-width: 700px) {
   .hdr-logo { top: -4px; }
+  .hdr-role { display: none; } /* titeln skulle överlappa namnet på smala skärmar */
 }
 
 /* ===== HEADLINE ===== */
@@ -92,7 +90,7 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
 }
 .headline {
   font-family: 'Geist', Helvetica, Arial, sans-serif;
-  font-size: 22px; font-weight: 400; line-height: 1;
+  font-size: 22px; font-weight: 300; line-height: 1;
   letter-spacing: -0.02em;
   text-transform: uppercase;
   max-width: 640px; margin: 0 0 1em; color: #111;
@@ -105,6 +103,11 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
     font-size: 2vw;
     max-width: none;
   }
+}
+/* iPad: statementet hålls smalare (50%). Måste stå EFTER min-width:701-regeln ovan för att
+   vinna vid lika specificitet inom det överlappande intervallet 701–1024px. */
+@media (min-width: 701px) and (max-width: 1024px) {
+  .headline { max-width: 50%; }
 }
 @media (max-width: 700px) {
   .headline { margin-bottom: 0; }
@@ -123,6 +126,12 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
 .carousel-wrap {
   position: relative; width: 100%; margin: 56px 0 40px;
   user-select: none;
+  /* faderar in + glider upp till sin plats när den rullas in i vy, se IntersectionObserver i JS */
+  opacity: 0; transform: translateY(28px);
+  transition: opacity .45s ease, transform .45s ease;
+}
+.carousel-wrap.in-view {
+  opacity: 1; transform: translateY(0);
 }
 .carousel {
   display: flex; align-items: flex-start; gap: 12px;
@@ -159,7 +168,8 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
 .card-caption {
   margin-top: 4px; font-size: 13px; line-height: 1.5; color: #1a1a1a;
 }
-.cap-name { text-transform: uppercase; }
+.cap-name { text-transform: uppercase; display: block; }
+.cap-desc { display: block; }
 
 /* ===== FOOTER =====
    Ligger i samma flex-kolumn som karusellen (.closing-section), med margin-top:
@@ -201,12 +211,12 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
   .panel-info-label { font-size: 16px; }
   .panel-close { font-size: 16px; }
   .info-panel { --panel-text-width: 820px; }
-  .info-panel p { font-size: 16px; }
   .panel-links a, .footer-links a { font-size: 16px; }
+  .page-footer { font-size: 16px; } /* så copyright-texten matchar länkarna bredvid, inte bara dem själva */
 }
 
 .info-panel p {
-  font-size: 13px; line-height: 1.35; max-width: var(--panel-text-width); margin: 0 0 18px;
+  font-size: 16px; line-height: 1.35; max-width: var(--panel-text-width); margin: 0 0 18px;
   color: #1a1a1a;
 }
 .examples {

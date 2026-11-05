@@ -4,12 +4,17 @@ window.addEventListener('scroll', () => {
   document.body.classList.toggle('scrolled', window.scrollY > heroHeight - 80);
 });
 
-// hero: snabb inblandning när videon är redo att spelas, så bara en kort
-// neutral gråton syns innan dess (istället för en abrupt växling)
-const heroVideo = document.getElementById('heroVideo');
-function markHeroReady() { heroVideo.classList.add('is-ready'); }
-if (heroVideo.readyState >= 2) markHeroReady();
-heroVideo.addEventListener('loadeddata', markHeroReady);
+// karusell: faderar in + glider upp till sin plats första gången den rullas in i vy
+const carouselRevealTarget = document.getElementById('carouselWrap');
+const carouselRevealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      carouselRevealTarget.classList.add('in-view');
+      carouselRevealObserver.unobserve(carouselRevealTarget);
+    }
+  });
+}, { threshold: 0.2 });
+carouselRevealObserver.observe(carouselRevealTarget);
 
 // info-panel: Info-knappen i headern öppnar, (Close) stänger
 const panel = document.getElementById('infoPanel');
@@ -24,12 +29,20 @@ function setPanel(open) {
 openBtn.addEventListener('click', () => setPanel(true));
 closeBtn.addEventListener('click', () => setPanel(false));
 
-// panelens bredd: vänsterkanten hamnar vid den centrerade titelns vänsterkant
+// panelens bredd: desktop/tablet mäter som tidigare mot titelns vänsterkant (titeln
+// syns där). På mobil är titeln dold (döljs för att inte overlappa namnet), så där
+// mäter vi istället mot namnets högerkant så panelen stannar strax till höger om namnet.
 const hdrRole = document.querySelector('.hdr-role');
+const hdrName = document.querySelector('.hdr-name');
 function updatePanelWidth() {
-  const rect = hdrRole.getBoundingClientRect();
   const buffer = 14;
-  const leftEdge = rect.left - buffer;
+  const mobile = window.matchMedia('(max-width: 700px)').matches;
+  let leftEdge;
+  if (mobile) {
+    leftEdge = hdrName.getBoundingClientRect().right + buffer;
+  } else {
+    leftEdge = hdrRole.getBoundingClientRect().left - buffer;
+  }
   const width = window.innerWidth - leftEdge;
   panel.style.width = width + 'px';
 }
