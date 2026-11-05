@@ -28,7 +28,7 @@ header {
   transition: opacity .3s ease; pointer-events: none;
 }
 body.scrolled .hdr-scrim { opacity: 0; }
-body.scrolled header { color: #111; }
+body.scrolled header { color: #111; background: #fff; } /* solid bakgrund så karusellkort aldrig syns genom/bakom headern */
 body.panel-open header { pointer-events: none; }
 
 .hdr-name { justify-self: start; font-weight: 400; white-space: nowrap; letter-spacing: -0.02em; }
@@ -73,7 +73,7 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
 .hero-video {
   position: absolute; inset: 0; display: flex;
   align-items: center; justify-content: center;
-  background: #e0ddd6; /* neutral tills posterbilden/videon hunnit ladda */
+  background: #fff; /* tills posterbilden/videon hunnit ladda */
   overflow: hidden;
 }
 .hero-media {
