@@ -1,4 +1,8 @@
-:root { color-scheme: light dark; }
+:root {
+  color-scheme: light dark;
+  --header-top-padding: 14px;
+  --header-line-height: 1.5;
+}
 * { box-sizing: border-box; }
 html, body {
   margin: 0; padding: 0; width: 100%;
@@ -15,31 +19,18 @@ header {
   grid-template-columns: 1fr 1fr 1fr;
   column-gap: 16px;
   align-items: start;
-  padding: 14px 12px;
-  font-size: 16px; line-height: 1.05; letter-spacing: normal;
-  font-weight: 400;
-  color: #fff;
-  transition: color .3s ease;
+  padding: var(--header-top-padding) 12px;
+  font-size: 13px; line-height: var(--header-line-height);
+  font-weight: 400; text-transform: uppercase;
+  color: #111; background: #fff;
 }
-/* mörk gradient ovanför videon så den vita headertexten syns innan man scrollat */
-.hdr-scrim {
-  position: fixed; top: 0; left: 0; right: 0; height: 140px; z-index: 29;
-  background: linear-gradient(to bottom, rgba(0,0,0,.32), rgba(0,0,0,0));
-  transition: opacity .3s ease; pointer-events: none;
-}
-body.scrolled .hdr-scrim { opacity: 0; }
-body.scrolled header { color: #111; background: #fff; } /* solid bakgrund så karusellkort aldrig syns genom/bakom headern */
 body.panel-open header { pointer-events: none; }
 
-.hdr-name { justify-self: start; font-weight: 400; white-space: nowrap; letter-spacing: -0.02em; }
-/* viewBox på loggan är beskuren exakt vid bokstävernas baslinje, så den linjerar
-   automatiskt med övrig headertext via vertical-align: baseline. top: -2px/-4px
-   är en liten finjustering ovanpå det. */
-.hdr-logo { height: 16.5px; width: auto; vertical-align: baseline; fill: currentColor; overflow: visible; position: relative; top: -2px; }
+.hdr-name { justify-self: start; white-space: nowrap; }
 .hdr-role {
-  position: fixed; top: 14px; left: 50%;
+  position: fixed; top: var(--header-top-padding); left: 50%;
   transform: translateX(-50%);
-  text-align: center; line-height: 1.05; opacity: .9;
+  text-align: center; line-height: inherit; opacity: .9;
   white-space: nowrap;
   transition: opacity .3s ease;
 }
@@ -64,6 +55,7 @@ body.panel-open .hdr-role { opacity: 0; pointer-events: none; }
   transition: opacity .25s ease;
 }
 body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
+.info-label-mobile { display: none; }
 
 /* ===== HERO ===== */
 .hero {
@@ -80,7 +72,8 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
   width: 100%; height: 100%; object-fit: cover; display: block;
 }
 @media (max-width: 700px) {
-  .hdr-logo { top: -4px; }
+  .info-label-desktop { display: none; }
+  .info-label-mobile { display: inline; }
   .hdr-role { display: none; } /* titeln skulle överlappa namnet på smala skärmar */
 }
 
@@ -90,7 +83,7 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
 }
 .headline {
   font-family: 'Geist', Helvetica, Arial, sans-serif;
-  font-size: 22px; font-weight: 300; line-height: 1;
+  font-size: max(22px, 2vw); font-weight: 300; line-height: 1;
   letter-spacing: -0.02em;
   text-transform: uppercase;
   max-width: 640px; margin: 0 0 1em; color: #111;
@@ -100,7 +93,6 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
 }
 @media (min-width: 701px) {
   .headline {
-    font-size: 2vw;
     max-width: none;
   }
 }
@@ -124,8 +116,8 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
 
 /* ===== KARUSELL ===== */
 .carousel-wrap {
-  position: relative; width: 100%; margin: 56px 0 40px;
-  user-select: none;
+  position: relative; width: 100%; margin: 56px 0 clamp(96px, 13vw, 264px);
+  user-select: none; touch-action: pan-y pinch-zoom;
   /* faderar in + glider upp till sin plats när den rullas in i vy, se IntersectionObserver i JS */
   opacity: 0; transform: translateY(28px);
   transition: opacity .45s ease, transform .45s ease;
@@ -135,29 +127,25 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
 }
 .carousel {
   display: flex; align-items: flex-start; gap: 12px;
-  overflow-x: auto; scrollbar-width: none; padding: 0 12px;
+  overflow-x: hidden; padding: 0 12px;
 }
-.carousel::-webkit-scrollbar { display: none; }
 
 .zone {
   position: absolute; top: 0; bottom: 0; width: 50%; z-index: 6;
 }
 .zone-left {
   left: 0;
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ctext x='2' y='30' font-size='28' fill='%23111'%3E%E2%AD%A0%3C/text%3E%3C/svg%3E") 18 18, pointer;
+  cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2258%22%20height%3D%2240%22%20viewBox%3D%220%200%2058%2040%22%3E%3Cpath%20d%3D%22M57%2020H2%20M20%202L2%2020L20%2038%22%20fill%3D%22none%22%20stroke%3D%22%23111%22%20stroke-width%3D%222.25%22%2F%3E%3C%2Fsvg%3E") 29 20, pointer;
 }
 .zone-right {
   right: 0;
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ctext x='2' y='30' font-size='28' fill='%23111'%3E%E2%AD%A2%3C/text%3E%3C/svg%3E") 18 18, pointer;
+  cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2258%22%20height%3D%2240%22%20viewBox%3D%220%200%2058%2040%22%3E%3Cpath%20d%3D%22M1%2020H56%20M38%202L56%2020L38%2038%22%20fill%3D%22none%22%20stroke%3D%22%23111%22%20stroke-width%3D%222.25%22%2F%3E%3C%2Fsvg%3E") 29 20, pointer;
 }
 
-/* kortbredd: 3 i bredd desktop, 2 iPad, 1 mobil */
+/* kortbredd: 2 på desktop och surfplatta, 1 på mobil */
 .card-item {
   flex: 0 0 auto; display: flex; flex-direction: column;
-  width: calc((100% - 24px) / 3);
-}
-@media (max-width: 1024px) and (min-width: 701px) {
-  .card-item { width: calc((100% - 12px) / 2); }
+  width: calc((100% - 12px) / 2);
 }
 @media (max-width: 700px) {
   .card-item { width: 100%; }
@@ -166,8 +154,9 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
 .card-media img, .card-media video { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .card-caption {
-  margin-top: 4px; font-size: 13px; line-height: 1.5; color: #1a1a1a;
+  margin-top: 4px;
 }
+.card-caption, .example-caption { font-size: 13px; line-height: 1.5; color: #1a1a1a; }
 .cap-name { text-transform: uppercase; display: block; }
 .cap-desc { display: block; }
 
@@ -178,8 +167,16 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
   margin-top: auto;
   padding: 0 12px 14px;
   font-size: 13px; line-height: 1.5; color: #1a1a1a;
-  display: flex; flex-direction: row; justify-content: space-between; align-items: baseline;
+}
+.footer-details {
+  display: flex; justify-content: space-between; align-items: baseline;
   gap: 16px; flex-wrap: wrap;
+}
+.footer-logo {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: clamp(16px, 2vw, 36px);
 }
 .footer-copy-short { display: none; }
 @media (max-width: 700px) {
@@ -188,7 +185,7 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
   .footer-copy-short { display: inline; }
 }
 .footer-links { display: flex; flex-direction: row; gap: 20px; }
-.footer-links a { font-size: 13px; color: #1a1a1a; text-decoration: underline; }
+.footer-links a { color: #1a1a1a; text-decoration: underline; }
 
 /* ===== INFO PANEL ===== */
 .info-panel {
@@ -196,35 +193,38 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
   background: #fdfcfa; color: #111;
   transform: translateX(100%);
   z-index: 32; overflow-y: auto;
-  padding: 54px 12px 14px;
+  padding: 0 12px 14px;
   display: flex; flex-direction: column;
-  --panel-text-width: 640px; /* bredd på brödtext + exempelbilder */
+  --panel-example-width: 640px;
 }
 .info-panel.open { transform: translateX(0); }
 
 .panel-topbar {
-  position: absolute; top: 0; left: 0; right: 0;
-  display: flex; justify-content: space-between; align-items: flex-start;
-  padding: 14px 12px;
-  font-weight: 400;
+  position: sticky; top: 0; z-index: 1;
+  flex: none; display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 4px; margin-inline: -12px; padding: var(--header-top-padding) 12px 12px;
+  background: inherit;
+  font-size: 13px; line-height: var(--header-line-height); font-weight: 400;
+  text-transform: uppercase;
 }
-.panel-info-label { font-size: 16px; line-height: 1.05; letter-spacing: normal; }
-.panel-close { font-size: 16px; line-height: 1.05; cursor: pointer; z-index: 26; position: relative; }
+.panel-close {
+  padding: 0; border: 0; background: none;
+  font: inherit; color: inherit; text-transform: inherit;
+  cursor: pointer;
+}
 
-@media (min-width: 701px) {
-  .info-panel { --panel-text-width: 820px; }
-}
 @media (max-width: 700px) {
   .info-panel { width: 100%; } /* täcker hela skärmen när den fälls ut på mobil */
 }
 
 .info-panel p {
-  font-size: 16px; line-height: 1.35; max-width: var(--panel-text-width); margin: 0 0 18px;
+  font-size: 13px; line-height: 1.35; margin: 0 0 18px;
+  overflow-wrap: anywhere;
   color: #1a1a1a;
 }
 .examples {
   display: flex; gap: 12px; margin-bottom: 22px;
-  max-width: var(--panel-text-width);
+  max-width: var(--panel-example-width);
 }
 .example { flex: 0 0 auto; }
 .example-inspo, .example-muse { width: calc((100% - 12px) / 2); }
@@ -236,7 +236,6 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
   margin-bottom: 6px; overflow: hidden;
 }
 .example-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; background: #eeeae1; }
-.example-caption { font-size: 13px; color: #1a1a1a; line-height: 1.35; }
 @media (max-width: 700px) {
   .examples { flex-direction: column; }
   .example-inspo, .example-muse { width: 100%; }
@@ -248,3 +247,16 @@ body.panel-open .hdr-toggle { opacity: 0; pointer-events: none; }
   position: relative; top: -1px;
 }
 .panel-links a { font-size: 13px; color: #1a1a1a; text-decoration: underline; }
+
+@media (min-width: 701px) {
+  header,
+  .card-caption .cap-name,
+  .page-footer,
+  .panel-topbar,
+  .info-panel p,
+  .example-caption .cap-name,
+  .panel-links a {
+    font-size: 15px;
+  }
+  .info-panel { --panel-example-width: 820px; }
+}

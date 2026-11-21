@@ -1,9 +1,3 @@
-// header: byter färg när man scrollat förbi herovideon
-const heroHeight = document.querySelector('.hero').offsetHeight;
-window.addEventListener('scroll', () => {
-  document.body.classList.toggle('scrolled', window.scrollY > heroHeight - 80);
-});
-
 // karusell: faderar in + glider upp till sin plats första gången den rullas in i vy
 const carouselRevealTarget = document.getElementById('carouselWrap');
 const carouselRevealObserver = new IntersectionObserver((entries) => {
@@ -16,7 +10,7 @@ const carouselRevealObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.2 });
 carouselRevealObserver.observe(carouselRevealTarget);
 
-// info-panel: Info-knappen i headern öppnar, (Close) stänger
+// Infoknappen öppnar panelen och (CLOSE) stänger den.
 const panel = document.getElementById('infoPanel');
 const openBtn = document.getElementById('infoToggle');
 const closeBtn = document.getElementById('closeBtn');
@@ -50,18 +44,28 @@ window.addEventListener('resize', updatePanelWidth);
 // ===== KARUSELL =====
 const carousel = document.getElementById('carousel');
 const wrap = document.getElementById('carouselWrap');
-let autoPaused = false;
 
-// Oändlig skroll åt båda håll: korten ligger som tre set i DOM:en (klon-FÖRE +
-// original + klon-EFTER). Vi startar i mitten och hoppar tyst +/- ett sets
-// bredd när man skrollar in i ett klon-set, så det känns som en oändlig loop.
-const REAL_COUNT = 6;
+// Lägg kopior före och efter originalen så att karusellen kan loopa åt båda håll.
+const projectCards = Array.from(carousel.children);
+function cloneProjectCards() {
+  return projectCards.map((card) => {
+    const clone = card.cloneNode(true);
+    clone.classList.add('card-clone');
+    clone.setAttribute('aria-hidden', 'true');
+    clone.querySelectorAll('img').forEach((image) => { image.alt = ''; });
+    return clone;
+  });
+}
+carousel.prepend(...cloneProjectCards());
+carousel.append(...cloneProjectCards());
+
 function getStep() {
-  const firstCard = carousel.querySelector('.card-item');
-  return firstCard ? firstCard.getBoundingClientRect().width + 12 : 500;
+  const firstCard = projectCards[0];
+  const gap = Number.parseFloat(getComputedStyle(carousel).columnGap) || 0;
+  return firstCard ? firstCard.getBoundingClientRect().width + gap : 500;
 }
 function getSetWidth() {
-  return getStep() * REAL_COUNT;
+  return getStep() * projectCards.length;
 }
 function normalizeScroll() {
   const w = getSetWidth();
@@ -88,76 +92,83 @@ function snapToNearest() {
   scrollToIndex(currentIndex());
 }
 
-// dra med handen, + klick vänster/höger för att bläddra
-let isDown = false, dragged = false, startX = 0, scrollStart = 0;
+// Klicka på en sida för att bläddra, eller dra tydligt i sidled.
+let gesture = null;
 
-wrap.addEventListener('pointerdown', (e) => {
-  isDown = true; dragged = false; autoPaused = true;
-  startX = e.clientX; scrollStart = carousel.scrollLeft;
+wrap.addEventListener('pointerdown', (event) => {
+  if (!event.isPrimary || event.button !== 0) return;
+  gesture = {
+    id: event.pointerId,
+    x: event.clientX,
+    y: event.clientY,
+    left: carousel.scrollLeft,
+    threshold: event.pointerType === 'touch' ? 24 : 10,
+    axis: null,
+  };
 });
-window.addEventListener('pointermove', (e) => {
-  if (!isDown) return;
-  const dx = e.clientX - startX;
-  if (Math.abs(dx) > 6) dragged = true;
-  carousel.scrollLeft = scrollStart - dx;
-  // tyst hopp mellan set mitt i en dragning (för långa svep)
-  const w = getSetWidth();
-  if (carousel.scrollLeft < w * 0.5) {
-    carousel.scrollLeft += w; scrollStart += w;
-  } else if (carousel.scrollLeft >= w * 1.5) {
-    carousel.scrollLeft -= w; scrollStart -= w;
+window.addEventListener('pointermove', (event) => {
+  if (gesture?.id !== event.pointerId) return;
+  const dx = event.clientX - gesture.x;
+  const dy = event.clientY - gesture.y;
+
+  if (!gesture.axis && Math.max(Math.abs(dx), Math.abs(dy)) >= gesture.threshold) {
+    gesture.axis = Math.abs(dx) >= Math.abs(dy) * 1.5 ? 'x' : 'y';
   }
+  if (gesture.axis !== 'x') return;
+
+  carousel.scrollLeft = gesture.left - dx;
+  const beforeWrap = carousel.scrollLeft;
+  normalizeScroll();
+  gesture.left += carousel.scrollLeft - beforeWrap;
 });
-window.addEventListener('pointerup', (e) => {
-  if (!isDown) return;
-  isDown = false;
-  if (!dragged) {
-    const rect = wrap.getBoundingClientRect();
-    const isRight = (e.clientX - rect.left) > rect.width / 2;
-    scrollToIndex(currentIndex() + (isRight ? 1 : -1));
-  } else {
+window.addEventListener('pointercancel', (event) => {
+  if (gesture?.id !== event.pointerId) return;
+  if (gesture.axis === 'x') snapToNearest();
+  gesture = null;
+});
+window.addEventListener('pointerup', (event) => {
+  if (gesture?.id !== event.pointerId) return;
+  const { axis, x, y, threshold } = gesture;
+  gesture = null;
+  if (axis === 'x') {
     snapToNearest();
+  } else if (!axis && Math.hypot(event.clientX - x, event.clientY - y) < threshold) {
+    const rect = wrap.getBoundingClientRect();
+    const direction = event.clientX - rect.left > rect.width / 2 ? 1 : -1;
+    scrollToIndex(currentIndex() + direction);
   }
-  setTimeout(() => { autoPaused = false; }, 600);
 });
 
-// skrollhjul/styrplatta bläddrar karusellen, med en kort fördröjning så
-// vanlig sidskroll hinner passera förbi karusellen ner till footern innan
-// karusellen tar över det horisontella skrollet
-const WHEEL_ENGAGE_DELAY = 500;
-const WHEEL_IDLE_RESET = 500;
-let wheelEngaged = false;
-let wheelEngageTimer = null;
-let wheelIdleTimer = null;
-let wheelSnapTimer;
+// Kräv en tydlig horisontell rörelse på styrplattan.
+const wheelThreshold = 28;
+const wheelPause = 150;
+let wheelTravel = 0;
+let wheelActive = false;
+let wheelTimer;
 
-function disengageWheel() {
-  wheelEngaged = false;
-  clearTimeout(wheelEngageTimer);
-  wheelEngageTimer = null;
+function finishWheel() {
+  if (wheelActive) snapToNearest();
+  wheelTravel = 0;
+  wheelActive = false;
 }
-wrap.addEventListener('mouseleave', disengageWheel);
 
-wrap.addEventListener('wheel', (e) => {
-  const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-  if (delta === 0) return;
-
-  clearTimeout(wheelIdleTimer);
-  wheelIdleTimer = setTimeout(disengageWheel, WHEEL_IDLE_RESET);
-
-  if (!wheelEngaged) {
-    if (!wheelEngageTimer) {
-      wheelEngageTimer = setTimeout(() => { wheelEngaged = true; }, WHEEL_ENGAGE_DELAY);
-    }
+wrap.addEventListener('wheel', (event) => {
+  const scale = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? carousel.clientWidth : 1;
+  const dx = event.deltaX * scale;
+  const dy = event.deltaY * scale;
+  if (dx === 0 || Math.abs(dx) < Math.abs(dy) * 1.5) {
+    clearTimeout(wheelTimer);
+    finishWheel();
     return;
   }
 
-  e.preventDefault();
-  autoPaused = true;
-  carousel.scrollLeft += delta;
-  clearTimeout(wheelSnapTimer);
-  wheelSnapTimer = setTimeout(() => {
-    snapToNearest();
-    autoPaused = false;
-  }, 120);
+  wheelTravel += dx;
+  wheelActive ||= Math.abs(wheelTravel) >= wheelThreshold;
+  if (wheelActive) {
+    event.preventDefault();
+    carousel.scrollLeft += dx * 0.75;
+  }
+
+  clearTimeout(wheelTimer);
+  wheelTimer = setTimeout(finishWheel, wheelPause);
 }, { passive: false });

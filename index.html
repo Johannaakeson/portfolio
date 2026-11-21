@@ -11,11 +11,10 @@
 </head>
 <body>
 
-  <div class="hdr-scrim"></div>
   <header>
     <div class="hdr-name">JOHANNA ÅKESON</div>
     <div class="hdr-role">Graphic Design &amp; Art Direction</div>
-    <button class="hdr-toggle" id="infoToggle">Info</button>
+    <button class="hdr-toggle" id="infoToggle"><span class="info-label-desktop">INFORMATION</span><span class="info-label-mobile">INFO</span></button>
   </header>
 
   <section class="hero">
@@ -34,51 +33,7 @@
     <div class="zone zone-right"></div>
 
     <div class="carousel" id="carousel">
-      <!-- klon-set FÖRE: skrollbuffert så karusellen kan loopa oändligt även bakåt -->
-      <div class="card-item card-a card-clone" aria-hidden="true">
-        <div class="card-media"><img src="assets/project-grant-thornton.jpg" alt="" /></div>
-        <div class="card-caption">
-          <span class="cap-name">Grant Thornton</span>
-          <span class="cap-desc">Branding with a sense of self-irony</span>
-        </div>
-      </div>
-      <div class="card-item card-b card-clone" aria-hidden="true">
-        <div class="card-media"><img src="assets/project-polisen.jpg" alt="" /></div>
-        <div class="card-caption">
-          <span class="cap-name">Polisen</span>
-          <span class="cap-desc">Recruitment for Sweden's largest authority</span>
-        </div>
-      </div>
-      <div class="card-item card-c card-clone" aria-hidden="true">
-        <div class="card-media"><img src="assets/project-boom-film.jpg" alt="" /></div>
-        <div class="card-caption">
-          <span class="cap-name">Boom Film</span>
-          <span class="cap-desc">Wordmark for Smålands creative production</span>
-        </div>
-      </div>
-      <div class="card-item card-d card-clone" aria-hidden="true">
-        <div class="card-media"><video src="assets/project-konsultdoja.mp4" autoplay loop muted playsinline></video></div>
-        <div class="card-caption">
-          <span class="cap-name">Grant Thornton</span>
-          <span class="cap-desc">Branding with a sense of self-irony</span>
-        </div>
-      </div>
-      <div class="card-item card-e card-clone" aria-hidden="true">
-        <div class="card-media"><video src="assets/project-gt-some.mp4" autoplay loop muted playsinline></video></div>
-        <div class="card-caption">
-          <span class="cap-name">Grant Thornton</span>
-          <span class="cap-desc">Branding with a sense of self-irony</span>
-        </div>
-      </div>
-      <div class="card-item card-f card-clone" aria-hidden="true">
-        <div class="card-media"><video src="assets/project-orkla.mp4" autoplay loop muted playsinline></video></div>
-        <div class="card-caption">
-          <span class="cap-name">Orkla</span>
-          <span class="cap-desc">Visual concept for 20 hours of sustainability learning</span>
-        </div>
-      </div>
-
-      <!-- original-set: detta är "mitten", startpositionen -->
+      <!-- Lägg till varje projekt en gång här. Karusellen skapar kopior för loopen. -->
       <div class="card-item card-a">
         <div class="card-media"><img src="assets/project-grant-thornton.jpg" alt="Grant Thornton — tygkasse med budskap" /></div>
         <div class="card-caption">
@@ -121,69 +76,29 @@
           <span class="cap-desc">Visual concept for 20 hours of sustainability learning</span>
         </div>
       </div>
-
-      <!-- klon-set EFTER: samma syfte, åt andra hållet -->
-      <div class="card-item card-a card-clone" aria-hidden="true">
-        <div class="card-media"><img src="assets/project-grant-thornton.jpg" alt="" /></div>
-        <div class="card-caption">
-          <span class="cap-name">Grant Thornton</span>
-          <span class="cap-desc">Branding with a sense of self-irony</span>
-        </div>
-      </div>
-      <div class="card-item card-b card-clone" aria-hidden="true">
-        <div class="card-media"><img src="assets/project-polisen.jpg" alt="" /></div>
-        <div class="card-caption">
-          <span class="cap-name">Polisen</span>
-          <span class="cap-desc">Recruitment for Sweden's largest authority</span>
-        </div>
-      </div>
-      <div class="card-item card-c card-clone" aria-hidden="true">
-        <div class="card-media"><img src="assets/project-boom-film.jpg" alt="" /></div>
-        <div class="card-caption">
-          <span class="cap-name">Boom Film</span>
-          <span class="cap-desc">Wordmark for Smålands creative production</span>
-        </div>
-      </div>
-      <div class="card-item card-d card-clone" aria-hidden="true">
-        <div class="card-media"><video src="assets/project-konsultdoja.mp4" autoplay loop muted playsinline></video></div>
-        <div class="card-caption">
-          <span class="cap-name">Grant Thornton</span>
-          <span class="cap-desc">Branding with a sense of self-irony</span>
-        </div>
-      </div>
-      <div class="card-item card-e card-clone" aria-hidden="true">
-        <div class="card-media"><video src="assets/project-gt-some.mp4" autoplay loop muted playsinline></video></div>
-        <div class="card-caption">
-          <span class="cap-name">Grant Thornton</span>
-          <span class="cap-desc">Branding with a sense of self-irony</span>
-        </div>
-      </div>
-      <div class="card-item card-f card-clone" aria-hidden="true">
-        <div class="card-media"><video src="assets/project-orkla.mp4" autoplay loop muted playsinline></video></div>
-        <div class="card-caption">
-          <span class="cap-name">Orkla</span>
-          <span class="cap-desc">Visual concept for 20 hours of sustainability learning</span>
-        </div>
-      </div>
     </div>
   </div>
 
-  <div class="page-footer">
-    <span class="footer-copy-full">©2026 Stockholm, SWE</span>
-    <span class="footer-copy-short">©2026</span>
-    <div class="footer-links">
-      <a href="https://www.linkedin.com/in/johanna-%C3%A5keson-981a36173" target="_blank" rel="noopener">LINKEDIN</a>
-      <a href="mailto:johanna@johannaakeson.com">EMAIL</a>
-      <a href="https://www.instagram.com/johannaakeson.design/" target="_blank" rel="noopener">INSTAGRAM</a>
+  <footer class="page-footer">
+    <div class="footer-details">
+      <span class="footer-copy-full">©2026 STOCKHOLM, SWE</span>
+      <span class="footer-copy-short">©2026</span>
+      <div class="footer-links">
+        <a href="https://www.linkedin.com/in/johanna-%C3%A5keson-981a36173" target="_blank" rel="noopener">LINKEDIN</a>
+        <a href="mailto:johanna@johannaakeson.com">EMAIL</a>
+        <a href="https://www.instagram.com/johannaakeson.design/" target="_blank" rel="noopener">INSTAGRAM</a>
+      </div>
     </div>
-  </div>
+    <img class="footer-logo" src="assets/footer-wordmark.svg" alt="Johanna Åkeson Design">
+  </footer>
   </div>
 
   <div class="info-panel" id="infoPanel">
     <div class="panel-topbar">
-      <div class="panel-info-label">Info</div>
-      <div class="panel-close" id="closeBtn">(Close)</div>
+      <div class="panel-info-label"><span class="info-label-desktop">INFORMATION</span><span class="info-label-mobile">INFO</span></div>
+      <button type="button" class="panel-close" id="closeBtn">(CLOSE)</button>
     </div>
+    <!-- Redigera texten i Info-panelen här. -->
     <p>
       I'm an Art Director and Graphic Designer based in Stockholm, currently working as Lead Designer at Prime Weber Shandwick.
     </p>
