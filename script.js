@@ -1,3 +1,25 @@
+const heroButton = document.querySelector('.hero-video');
+const heroVideo = document.getElementById('heroVideo');
+
+function syncHeroButton() {
+  heroButton.setAttribute('aria-label', heroVideo.paused ? 'Spela herofilmen' : 'Pausa herofilmen');
+}
+
+function playHero() {
+  heroVideo.play().catch(syncHeroButton);
+}
+
+heroVideo.addEventListener('play', syncHeroButton);
+heroVideo.addEventListener('pause', syncHeroButton);
+heroButton.addEventListener('click', () => {
+  if (heroVideo.paused) {
+    playHero();
+  } else {
+    heroVideo.pause();
+  }
+});
+syncHeroButton();
+
 // karusell: faderar in + glider upp till sin plats första gången den rullas in i vy
 const carouselRevealTarget = document.getElementById('carouselWrap');
 const carouselRevealObserver = new IntersectionObserver((entries) => {
@@ -14,11 +36,16 @@ carouselRevealObserver.observe(carouselRevealTarget);
 const panel = document.getElementById('infoPanel');
 const openBtn = document.getElementById('infoToggle');
 const closeBtn = document.getElementById('closeBtn');
-const heroVideos = document.querySelectorAll('.hero-media');
+let resumeHeroAfterPanel = false;
 function setPanel(open) {
   panel.classList.toggle('open', open);
   document.body.classList.toggle('panel-open', open);
-  heroVideos.forEach(v => { open ? v.pause() : v.play(); });
+  if (open) {
+    resumeHeroAfterPanel = !heroVideo.paused;
+    heroVideo.pause();
+  } else if (resumeHeroAfterPanel) {
+    playHero();
+  }
 }
 openBtn.addEventListener('click', () => setPanel(true));
 closeBtn.addEventListener('click', () => setPanel(false));
@@ -43,7 +70,7 @@ window.addEventListener('resize', updatePanelWidth);
 
 // ===== KARUSELL =====
 const carousel = document.getElementById('carousel');
-const wrap = document.getElementById('carouselWrap');
+const wrap = document.getElementById('carouselTrack');
 
 // Lägg kopior före och efter originalen så att karusellen kan loopa åt båda håll.
 const projectCards = Array.from(carousel.children);
@@ -53,6 +80,7 @@ function cloneProjectCards() {
     clone.classList.add('card-clone');
     clone.setAttribute('aria-hidden', 'true');
     clone.querySelectorAll('img').forEach((image) => { image.alt = ''; });
+    clone.querySelectorAll('.card-play').forEach((button) => { button.tabIndex = -1; });
     return clone;
   });
 }
@@ -77,6 +105,35 @@ function normalizeScroll() {
 }
 carousel.scrollLeft = getSetWidth();
 
+
+
+// Starta endast videor som faktiskt syns, inklusive karusellens kopior.
+function startCardVideo(video, playButton) {
+  video.muted = true;
+  video.play().then(() => { playButton.hidden = true; }).catch((error) => {
+    if (error.name !== 'AbortError') playButton.hidden = false;
+  });
+}
+
+const cardVideoObserver = new IntersectionObserver((entries) => {
+  for (const entry of entries) {
+    const video = entry.target;
+    const playButton = video.nextElementSibling;
+    if (entry.isIntersecting && entry.intersectionRatio >= 0.4) {
+      startCardVideo(video, playButton);
+    } else {
+      video.pause();
+    }
+  }
+}, { threshold: 0.4 });
+
+for (const video of carousel.querySelectorAll('video')) {
+  video.muted = true;
+  const playButton = video.nextElementSibling;
+  playButton.addEventListener('click', () => startCardVideo(video, playButton));
+  cardVideoObserver.observe(video);
+}
+
 // indexbaserad snap: varje "sida" är en kortbredd (+ gap) från start, så ett
 // kort alltid landar exakt i marginalen oavsett drag, klick eller skrollhjul
 function currentIndex() {
@@ -92,11 +149,16 @@ function snapToNearest() {
   scrollToIndex(currentIndex());
 }
 
+const previousProject = document.querySelector('.carousel-arrow-prev');
+const nextProject = document.querySelector('.carousel-arrow-next');
+previousProject.addEventListener('click', () => scrollToIndex(currentIndex() - 1));
+nextProject.addEventListener('click', () => scrollToIndex(currentIndex() + 1));
+
 // Klicka på en sida för att bläddra, eller dra tydligt i sidled.
 let gesture = null;
 
 wrap.addEventListener('pointerdown', (event) => {
-  if (!event.isPrimary || event.button !== 0) return;
+  if (!event.isPrimary || event.button !== 0 || event.target.closest('.card-play')) return;
   gesture = {
     id: event.pointerId,
     x: event.clientX,
